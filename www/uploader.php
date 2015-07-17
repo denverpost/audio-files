@@ -9,48 +9,13 @@
 #message               { position: absolute; margin-top: 250px; }
 #message div           { padding: 0px 10px; }
 </style>
-<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
-<script src="http://code.jquery.com/jquery-latest.min.js"></script>
-<script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+<link rel="stylesheet" href="css/jquery-ui.css">
+<script src="js/jquery-latest.min.js"></script>
+<script src="js/jquery-ui.js"></script>
 <script>
 
 var date       = new Date();
 var curr_year  = date.getFullYear();
-var curr_month = date.getMonth()+1; if(curr_month<10) curr_month='0'+curr_month;
-var curr_day   = date.getDate(); if(curr_day<10) curr_day='0'+curr_day;
-var sel_year   = curr_year;
-var sel_month  = curr_month;
-var sel_day    = curr_day;
-var today      = curr_month+"/"+curr_day+"/"+curr_year;
-
-var newdate = new Date(curr_year,curr_month,curr_day);
-newdate.setDate(newdate.getDate() + 1);
-var nd        = new Date(newdate);
-var tom_year  = nd.getFullYear();
-var tom_month = nd.getMonth(); if(tom_month<10) tom_month='0'+tom_month;
-var tom_day   = nd.getDate();  if(tom_day<10) tom_day='0'+tom_day;
-var tomorrow  = tom_month+"/"+tom_day+"/"+tom_year;
-
-
-function dateFieldChange(){
-    var d = $('#dateField').val();
-    if (d.indexOf("-") != -1) { d = d.replace(/\-/g,'/') }
-    if (!$.isNumeric(d.substring(0,1))) {
-        d = d.replace(",", "").replace("th", "").replace("rd", "");
-        d2 = d.split(' ');
-        switch(d2[0].substring(0,3).toLowerCase()){
-            case "jan": sel_month='01'; break; case "feb": sel_month='02'; break; case "mar": sel_month='03'; break; case "apr": sel_month='04'; break;
-            case "may": sel_month='05'; break; case "jun": sel_month='06'; break; case "jul": sel_month='07'; break; case "aug": sel_month='08'; break;
-            case "sep": sel_month='09'; break; case "oct": sel_month='10'; break; case "nov": sel_month='11'; break; case "dec": sel_month='12'; break;
-            }
-        sel_day  = parseInt(d2[1]); if(sel_day<10)         { sel_day='0'+sel_day; }
-        sel_year = parseInt(d2[2]); if(sel_year.length<3)  { sel_year='20'+sel_year; }
-        $('#datepicker, #dateField, #custom').val(sel_month+"/"+sel_day+"/"+sel_year);
-        }
-    else { $('#datepicker, #datepicker, #custom').val(d); }
-    var nm = parseInt(sel_month)-1;
-    if(new Date(sel_year,nm,sel_day) > new Date()) { $('#datepicker, #dateField, #custom').val(curr_month+"/"+curr_day+"/"+curr_year); updateImage(); }
-    }
 
 function populateInput() {
     $('#dateField, #custom').val($('#datepicker').val());
@@ -60,15 +25,16 @@ function populateInput() {
 
 </script>
 
+<h1>Audio File Uploader</h1>
 <form action="" id="upLoadImage" name='upLoadImage' method='post' enctype="multipart/form-data">
-    <div id="radioTitle">This image is for:</div>
+    <h2>Describe the audio</h2>
    <div id="radios">
     <input type="radio"  name="date"      id="today"      value="today" checked >Today<br />
         <input type="radio"  name="date"      id="tomorrow"   value="tomorrow">Tomorrow<br />
       <input type="radio"  name="date"      id="custom"     value="custom" onchange="populateInput()">Custom date:
    </div>
     <div id="uploadHere">
-    Upload Image: <input name="image" type="file"><br /><br />
+    Upload Audio: <input name="audio" type="file"><br /><br />
    </div>
    <input type="submit" name="submit" value="upload the File" onclick="populateInput();">
 </form>

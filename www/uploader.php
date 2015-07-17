@@ -1,72 +1,3 @@
-<style>
-#radioTitle            { float: left; height: 60px; line-height: 3.6; margin-right:15px }
-#radios                { margin-bottom: 10px; }
-#uploadImage           { float: left; width: 220px; overflow: visible; }
-#chooseDateForm        { margin-top: 40px; float: left; }
-#chooseDateForm button { width: 23px; height: 25px; float: right; }
-#chooseDateForm img    { width: 20px; margin-left: -6px; }
-#uploadHere            { float: left; width: 600px; margin-top: 30px; }
-#message               { position: absolute; margin-top: 250px; }
-#message div           { padding: 0px 10px; }
-</style>
-<link rel="stylesheet" href="css/jquery-ui.css">
-<script src="js/jquery-latest.min.js"></script>
-<script src="js/jquery-ui.js"></script>
-<script>
-
-var date       = new Date();
-var curr_year  = date.getFullYear();
-
-function populateInput() {
-    $('#dateField, #custom').val($('#datepicker').val());
-    $('#custom').val($('#datepicker').val());
-    $('#message').remove();
-    }
-
-</script>
-
-<h1>Audio File Uploader</h1>
-<form action="" id="upLoadImage" name='upLoadImage' method='post' enctype="multipart/form-data">
-    <h2>Describe the audio</h2>
-   <div id="radios">
-    <input type="radio"  name="date"      id="today"      value="today" checked >Today<br />
-        <input type="radio"  name="date"      id="tomorrow"   value="tomorrow">Tomorrow<br />
-      <input type="radio"  name="date"      id="custom"     value="custom" onchange="populateInput()">Custom date:
-   </div>
-    <div id="uploadHere">
-    Upload Audio: <input name="audio" type="file"><br /><br />
-   </div>
-   <input type="submit" name="submit" value="upload the File" onclick="populateInput();">
-</form>
-
-<form name="chooseDateForm" id="chooseDateForm">
-   <input type="hidden" id="datepicker" onchange="populateInput()">
-   <input type="text" id="dateField" onchange="dateFieldChange()"></span>
-</form>
-
-<script>
-$(function(){
-    $('#datepicker').datepicker({
-        inline: true,
-        nextText: '&rarr;',
-        prevText: '&larr;',
-        showOtherMonths: true,
-        dateFormat: 'mm/dd/yy',
-        dayNamesMin: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-        showOn: "button",
-        buttonImage: "http://extras.denverpost.com/frontpages/calendar.svg",
-        buttonImageOnly: false,
-    });
-    $('#datepicker, #dateField').val(sel_month+"/"+sel_day+"/"+sel_year);
-    $('#chooseDateForm').submit(function () { return false; });
-    $('#today').val(today);
-    $('#tomorrow').val(tomorrow);
-    $('.ui-datepicker-trigger, #dateField').click(function(){
-        $('#today, #tomorrow').prop('checked', false);
-        $('#custom').prop('checked', true);
-        });
-});
-</script>
 <?php
 
 ini_set('display_startup_errors',1);
@@ -162,3 +93,41 @@ if(isset($_FILES["image"])) {
     }
 }
 ?>
+<style>
+#radioTitle            { float: left; height: 60px; line-height: 3.6; margin-right:15px }
+#radios                { margin-bottom: 10px; }
+#uploadImage           { float: left; width: 220px; overflow: visible; }
+#chooseDateForm        { margin-top: 40px; float: left; }
+#chooseDateForm button { width: 23px; height: 25px; float: right; }
+#chooseDateForm img    { width: 20px; margin-left: -6px; }
+#uploadHere            { float: left; width: 600px; margin-top: 30px; }
+#message               { position: absolute; margin-top: 250px; }
+#message div           { padding: 0px 10px; }
+</style>
+<link rel="stylesheet" href="css/jquery-ui.css">
+<script src="js/jquery-latest.min.js"></script>
+<script src="js/jquery-ui.js"></script>
+<script>
+
+var date       = new Date();
+var curr_year  = date.getFullYear();
+
+function populateInput() {
+    $('#dateField, #custom').val($('#datepicker').val());
+    $('#custom').val($('#datepicker').val());
+    $('#message').remove();
+    }
+
+</script>
+
+<h1>Audio File Uploader</h1>
+<form action="" id="up" name="up" method="post" enctype="multipart/form-data">
+    <h2>Describe the audio</h2>
+    <p id="project">
+        <label for="project">Project Name:</label> <input name="project" type="text" maxlength="50" />
+    </p>
+    <p id="audio">
+        <label for="audio">Audio File:</label> <input name="audio" type="file" />
+    </p>
+   <input type="submit" name="submit" value="upload the File" onclick="populateInput();">
+</form>

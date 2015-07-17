@@ -1,9 +1,12 @@
 <?php
-
 ini_set('display_startup_errors',1);
 ini_set('display_errors',1);
 error_reporting(-1);
+?>
 
+
+
+<?php
 if(isset($_FILES["audio"])) {
     echo "<div id='message'>";
     if ($_FILES["audio"]["error"] > 0) {
@@ -26,16 +29,7 @@ if(isset($_FILES["audio"])) {
         if (!file_exists($FTP_DIRECTORY."/".$year."/".$month."/")) { ftp_mkdir($conn_id, $FTP_DIRECTORY."/".$year."/".$month); } // if the month folder does not exist, create it
 
         if (($_FILES["audio"]["type"]=="application/pdf")||($_FILES["audio"]["type"]=="image/jpeg")) {
-            $extension = ".pdf";
-            if($_FILES["audio"]["type"]=="image/jpeg") { $extension = "-original.jpg"; }
             move_uploaded_file($_FILES["audio"]["tmp_name"], $_FILES["audio"]["name"].$extension); // drop original file in current folder for imagick to use
-            $im = new imagick();
-            $im->setResolution(72,72);
-            $im->readimage($_FILES["audio"]["name"].$extension);
-            $im->setImageFormat('jpg');
-            $im->scaleImage(350,0);
-            $im->writeImage($_FILES["audio"]["name"].".jpg"); // Create the smaller jpg version in current folder
-            $im->clear();
 
             if (ftp_put($conn_id, $FTP_DIRECTORY.$location.$_FILES["audio"]["name"].$extension, $_FILES["audio"]["name"].$extension, FTP_BINARY)) {
                 echo "<div style='background-color:green'>Original file uploaded!</div>";
@@ -67,17 +61,6 @@ if(isset($_FILES["audio"])) {
                                 }
                             }
                         }
-
-                    $newString = "frontPages({arr:[";
-                    for($i=0;$i<sizeof($json_c);$i++) {
-                        $newString .= $json_c[$i];
-                        if( $i < sizeof($json_c)-1 ) { $newString .= ","; }
-                        }
-
-                    $newString .= "]})";
-
-                    file_put_contents("frontpages.json", $newString);
-
                     }
                 echo "<div style='background-color:green'>.jpg created and uploaded!</div>";
                 }

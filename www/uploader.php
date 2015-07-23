@@ -3,7 +3,37 @@ ini_set('display_startup_errors',1);
 ini_set('display_errors',1);
 error_reporting(-1);
 ?>
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1">
 
+    <title>Audio Uploader - The Denver Post</title>
+
+    <link rel="shortcut icon" href="http://extras.mnginteractive.com/live/media/favIcon/dpo/favicon.ico" type="image/x-icon" />
+
+    <meta name="distribution" content="global" />
+    <meta name="robots" content="noindex" />
+    <meta name="language" content="en, sv" />
+    <meta name="Copyright" content="Copyright &copy; The Denver Post." />
+
+    <meta name="description" content="">
+    <meta name="news_keywords" content="">
+
+    <meta name="google-site-verification" content="2bKNvyyGh6DUlOvH1PYsmKN4KRlb-0ZI7TvFtuKLeAc" />
+    <style type="text/css">
+        footer 
+        {
+            clear: both; 
+            margin: auto;
+            text-align: center;
+        }
+    </style>
+    <link rel="stylesheet" type="text/css" href="http://extras.mnginteractive.com/live/css/site67/bartertown.css" />
+    <script src="http://local.denverpost.com/common/jquery/jquery-min.js"></script>
+</head>
+<body>
 
 
 <?php
@@ -115,3 +145,5 @@ function populateInput() {
     </p>
    <input type="submit" name="submit" value="Upload">
 </form>
+</body>
+</html>

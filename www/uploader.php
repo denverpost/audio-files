@@ -38,6 +38,31 @@ error_reporting(-1);
 
 
 <?php
+function slugify($text)
+{ 
+  // replace non letter or digits by -
+  $text = preg_replace('~[^\\pL\d]+~u', '-', $text);
+
+  // trim
+  $text = trim($text, '-');
+
+  // transliterate
+  //$text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
+
+  // lowercase
+  $text = strtolower($text);
+
+  // remove unwanted characters
+  $text = preg_replace('~[^-\w]+~', '', $text);
+
+  if (empty($text))
+  {
+    return 'n-a';
+  }
+
+  return $text;
+}
+
 if(isset($_FILES["audio"])) {
     echo "<div id='message'>";
     if ($_FILES["audio"]["error"] > 0):
@@ -50,30 +75,27 @@ if(isset($_FILES["audio"])) {
         ftp_pasv($conn_id, TRUE);
         $year = date("Y");
         $location = $year."/";
-        //$_FILES["audio"]["name"] = $year."-".$month."-".$day; // rename the file to today's date
+        $project = '';
+        if ( array_key_exists('project', $_GET) ):
+            $project = '/' . slugify($_GET['project']);
+        endif;
 
-        if (!file_exists($FTP_DIRECTORY."/".$year."/"))            { ftp_mkdir($conn_id, $FTP_DIRECTORY."/".$year); }            // if the year folder does not exist, create it
+        if (!file_exists($FTP_DIRECTORY."/".$year)) { @ftp_mkdir($conn_id, $FTP_DIRECTORY."/".$year); }            // if the year folder does not exist, create it
+        if (!file_exists($FTP_DIRECTORY."/".$year.$project)) { @ftp_mkdir($conn_id, $FTP_DIRECTORY."/".$year . $project); } // if the project folder does not exist, create it
 
         if ($_FILES["audio"]["type"]=="audio/mp3"):
-            move_uploaded_file($_FILES["audio"]["tmp_name"], $_FILES["audio"]["name"].$extension); // drop original file in current folder for imagick to use
-
-            if (ftp_put($conn_id, $FTP_DIRECTORY.$location.$_FILES["audio"]["name"].$extension, $_FILES["audio"]["name"].$extension, FTP_BINARY)):
-                echo "<div style='background-color:green'>Original file uploaded!</div>";
-            else:
-                echo "<div style='background-color:red'><span style='font-weight:bold'>ERROR</span> :: The original file did not upload!</div>"; 
-            endif;
+            move_uploaded_file($_FILES["audio"]["tmp_name"], $_FILES["audio"]["name"]); // drop original file in current folder for imagick to use
 
             if (ftp_put($conn_id, $FTP_DIRECTORY.$location.$_FILES["audio"]["name"], $_FILES["audio"]["name"], FTP_BINARY)):
-                echo "<div style='background-color:green'>File created and uploaded!</div>";
+                echo "<div style='background-color:#a2ff96;'>File created and uploaded to: http://extras.denverpost.com/media/mp3/" . $year . $project . "/" . $_FILES["audio"]["name"] . "</div>";
             else:
                 echo "<div style='background-color:red'><span style='font-weight:bold'>ERROR</span> :: The file did not upload!</div>";
             endif;
 
-            unlink($_FILES["audio"]["name"].".jpg");     // delete the jpg file in current folder
-            unlink($_FILES["audio"]["name"].$extension); // delete the pdf file in current folder
+            unlink($_FILES["audio"]["name"]);     // delete the file in current folder
 
         else: 
-            echo "<div style='background-color:red'>File must be a pdf or jpg file!<br> This file is: ".$_FILES["audio"]["type"]."</div>";
+            echo "<div style='background-color:red'>File must be a mp3 file!<br> This file is: ".$_FILES["audio"]["type"]."</div>";
         endif;
         echo "</div>";
         ftp_close($conn_id);

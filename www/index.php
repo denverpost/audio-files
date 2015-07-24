@@ -86,16 +86,17 @@ if(isset($_FILES["audio"])) {
         if ($_FILES["audio"]["type"]=="audio/mp3"):
             move_uploaded_file($_FILES["audio"]["tmp_name"], $_FILES["audio"]["name"]); // drop original file in current folder for imagick to use
 
-            if (ftp_put($conn_id, $FTP_DIRECTORY.$location.$_FILES["audio"]["name"], $_FILES["audio"]["name"], FTP_BINARY)):
-                echo "<div style='background-color:#a2ff96;'>File created and uploaded to: http://extras.denverpost.com/media/mp3/" . $year . $project . "/" . $_FILES["audio"]["name"] . "</div>";
+            $path = $FTP_DIRECTORY.$location.$project.$_FILES["audio"]["name"];
+            if (ftp_put($conn_id, $path, $_FILES["audio"]["name"], FTP_BINARY)):
+                echo "<div class='alerts' style='background-color:#a2ff96;'>File created and uploaded to: http://extras.denverpost.com/media/mp3/" . $year . $project . "/" . $_FILES["audio"]["name"] . "</div>";
             else:
-                echo "<div style='background-color:red'><span style='font-weight:bold'>ERROR</span> :: The file did not upload!</div>";
+                echo "<div class='alerts' style='background-color:red'><span style='font-weight:bold'>ERROR</span> :: The file did not upload to " . $path . "!</div>";
             endif;
 
             unlink($_FILES["audio"]["name"]);     // delete the file in current folder
 
         else: 
-            echo "<div style='background-color:red'>File must be a mp3 file!<br> This file is: ".$_FILES["audio"]["type"]."</div>";
+            echo "<div class='alerts' style='background-color:red'>File must be a mp3 file!<br> This file is: ".$_FILES["audio"]["type"]."</div>";
         endif;
         echo "</div>";
         ftp_close($conn_id);
@@ -103,15 +104,11 @@ if(isset($_FILES["audio"])) {
 }
 ?>
 <style>
-#radioTitle            { float: left; height: 60px; line-height: 3.6; margin-right:15px }
-#radios                { margin-bottom: 10px; }
 #uploadImage           { float: left; width: 220px; overflow: visible; }
-#chooseDateForm        { margin-top: 40px; float: left; }
-#chooseDateForm button { width: 23px; height: 25px; float: right; }
-#chooseDateForm img    { width: 20px; margin-left: -6px; }
 #uploadHere            { float: left; width: 600px; margin-top: 30px; }
 #message               { position: absolute; margin-top: 250px; }
 #message div           { padding: 0px 10px; }
+.alerts { margin-top:20px; }
 </style>
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/jquery-ui.css">

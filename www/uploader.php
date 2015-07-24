@@ -57,7 +57,7 @@ function slugify($text)
 
   if (empty($text))
   {
-    return 'n-a';
+    return '';
   }
 
   return $text;
@@ -76,8 +76,8 @@ if(isset($_FILES["audio"])) {
         $year = date("Y");
         $location = $year."/";
         $project = '';
-        if ( array_key_exists('project', $_GET) ):
-            $project = '/' . slugify($_GET['project']);
+        if ( array_key_exists('project', $_POST) ):
+            $project = '/' . slugify($_POST['project']);
         endif;
 
         if (!file_exists($FTP_DIRECTORY."/".$year)) { @ftp_mkdir($conn_id, $FTP_DIRECTORY."/".$year); }            // if the year folder does not exist, create it

@@ -153,7 +153,7 @@ ftp_close($conn_id);
 <?php if ( isset($markup) ) echo $markup; ?>
 <h1>Audio File Uploader</h1>
 <form action="" id="up" name="up" method="post" enctype="multipart/form-data">
-    <h2>Describe the audio</h2>
+    <h2 style="display:none;">Describe the audio</h2>
     <p id="project_label">
         <label for="project">Project Name:</label> <input name="project" id="project" type="text" maxlength="50" value="" />
     </p>

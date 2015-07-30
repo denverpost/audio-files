@@ -2,6 +2,7 @@
 ini_set('display_startup_errors',1);
 ini_set('display_errors',1);
 error_reporting(-1);
+// NOT MY CODE JUST WORKING WITH IT
 ?>
 <!DOCTYPE HTML>
 <html lang="en">
@@ -38,6 +39,29 @@ error_reporting(-1);
 
 
 <?php
+require('constants.php');
+$conn_id = ftp_connect($FTP_SERVER) or die("Couldn't connect to $ftp_server");
+ftp_login($conn_id,$FTP_USER_NAME,$FTP_USER_PASS);
+ftp_pasv($conn_id, TRUE);
+$year = date("Y");
+$location = $year."/";
+if (!file_exists($FTP_DIRECTORY."/".$year)) { @ftp_mkdir($conn_id, $FTP_DIRECTORY."/".$year); }
+ftp_chdir($conn_id, $FTP_DIRECTORY."/".$year);
+
+
+// We'll need a list of the existing directories (i.e. projects)
+$file_and_dir_list = ftp_nlist($conn_id, ".");
+$project_list = [];
+foreach ( $file_and_dir_list as $item ):
+    if ( strpos($item, '.') === FALSE ):
+        $item = '<li><a href="#" onClick="$(\'#project\').attr(\'value\', \'' . $item . '\');">' . $item . '</a></li>';
+        array_push($project_list, $item);
+    endif;
+endforeach;
+sort($project_list);
+
+
+
 function slugify($text)
 { 
   // replace non letter or digits by -
@@ -69,22 +93,15 @@ if(isset($_FILES["audio"])) {
         if ($_FILES["audio"]["error"]==4) { echo "<div style='background-color:red'>No file was chosen to be uploaded</div>"; exit; } // No image file was uploaded
         else { echo "<div style='background-color:red'>Error Code: " . $_FILES["audio"]["error"] . "</div>"; exit; } // Another error occurred
     else :
-        require('constants.php');
-        $conn_id = ftp_connect($FTP_SERVER) or die("Couldn't connect to $ftp_server");
-        ftp_login($conn_id,$FTP_USER_NAME,$FTP_USER_PASS);
-        ftp_pasv($conn_id, TRUE);
-        $year = date("Y");
-        $location = $year."/";
         $project = '';
         if ( array_key_exists('project', $_POST) ):
             $project = '/' . slugify($_POST['project']);
         endif;
 
-        if (!file_exists($FTP_DIRECTORY."/".$year)) { @ftp_mkdir($conn_id, $FTP_DIRECTORY."/".$year); }            // if the year folder does not exist, create it
-        if (!file_exists($FTP_DIRECTORY."/".$year.$project)) { @ftp_mkdir($conn_id, $FTP_DIRECTORY."/".$year . $project); } // if the project folder does not exist, create it
+        if (!file_exists($FTP_DIRECTORY."/".$year.$project)) { @ftp_mkdir($conn_id, $FTP_DIRECTORY."/".$year.$project); }
 
         if ($_FILES["audio"]["type"]=="audio/mp3"):
-            move_uploaded_file($_FILES["audio"]["tmp_name"], $_FILES["audio"]["name"]); // drop original file in current folder for imagick to use
+            move_uploaded_file($_FILES["audio"]["tmp_name"], $_FILES["audio"]["name"]);
 
             $path = $FTP_DIRECTORY.$location.$project.$_FILES["audio"]["name"];
             if (ftp_put($conn_id, $path, $_FILES["audio"]["name"], FTP_BINARY)):
@@ -99,8 +116,8 @@ if(isset($_FILES["audio"])) {
             echo "<div class='alerts' style='background-color:red'>File must be a mp3 file!<br> This file is: ".$_FILES["audio"]["type"]."</div>";
         endif;
         echo "</div>";
-        ftp_close($conn_id);
     endif;
+ftp_close($conn_id);
 }
 ?>
 <style>
@@ -108,32 +125,34 @@ if(isset($_FILES["audio"])) {
 #uploadHere            { float: left; width: 600px; margin-top: 30px; }
 #message               { position: absolute; margin-top: 250px; }
 #message div           { padding: 0px 10px; }
-.alerts { margin-top:20px; }
+.alerts
+{
+    margin-top:20px;
+}
+#project_list li
+{
+    float: left;
+}
+#project_list li::after
+{
+    content: ",\00A0";
+}
 </style>
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/jquery-ui.css">
 <script src="js/jquery-latest.min.js"></script>
 <script src="js/jquery-ui.js"></script>
-<script>
-
-var date       = new Date();
-var curr_year  = date.getFullYear();
-
-function populateInput() {
-    $('#dateField, #custom').val($('#datepicker').val());
-    $('#custom').val($('#datepicker').val());
-    $('#message').remove();
-    }
-
-</script>
 
 <h1>Audio File Uploader</h1>
 <form action="" id="up" name="up" method="post" enctype="multipart/form-data">
     <h2>Describe the audio</h2>
-    <p id="project">
-        <label for="project">Project Name:</label> <input name="project" type="text" maxlength="50" />
+    <p id="project_label">
+        <label for="project">Project Name:</label> <input name="project" id="project" type="text" maxlength="50" value="" />
     </p>
-    <p id="audio">
+    <h5>Existing Projects</h5>
+    <ul id="project_list"><?php foreach ( $project_list as $item ) echo $item; ?></ul>
+    <hr noshade>
+    <p id="audio_label">
         <label for="audio">Audio File:</label> <input name="audio" type="file" />
     </p>
    <input type="submit" name="submit" value="Upload">

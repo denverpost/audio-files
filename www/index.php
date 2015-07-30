@@ -105,7 +105,14 @@ if(isset($_FILES["audio"])) {
 
             $path = $FTP_DIRECTORY.$location.$project.$_FILES["audio"]["name"];
             if (ftp_put($conn_id, $path, $_FILES["audio"]["name"], FTP_BINARY)):
-                echo "<div class='alerts' style='background-color:#a2ff96;'>File created and uploaded to: http://extras.denverpost.com/media/mp3/" . $year . $project . "/" . $_FILES["audio"]["name"] . "</div>";
+                $filepath = "http://extras.denverpost.com/media/mp3/" . $year . $project . "/" . $_FILES["audio"]["name"];
+                echo "<div class='alerts' style='background-color:#a2ff96;'>File created and uploaded to: " . $filepath . "</div>";
+
+                // Put together the markup for the freeform
+                $markup = file_get_contents('audio.html');
+                $markup = str_replace('<', '&lt;', $markup);
+                $markup = str_replace('{{URL}}', $filepath, $markup);
+                $markup = '<pre>' . $markup . '</pre>';
             else:
                 echo "<div class='alerts' style='background-color:red'><span style='font-weight:bold'>ERROR</span> :: The file did not upload to " . $path . "!</div>";
             endif;
@@ -143,6 +150,7 @@ ftp_close($conn_id);
 <script src="js/jquery-latest.min.js"></script>
 <script src="js/jquery-ui.js"></script>
 
+<?php if ( isset($markup) ) echo $markup; ?>
 <h1>Audio File Uploader</h1>
 <form action="" id="up" name="up" method="post" enctype="multipart/form-data">
     <h2>Describe the audio</h2>

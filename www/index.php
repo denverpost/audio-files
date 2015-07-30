@@ -51,7 +51,7 @@ ftp_chdir($conn_id, $FTP_DIRECTORY."/".$year);
 
 // We'll need a list of the existing directories (i.e. projects)
 $file_and_dir_list = ftp_nlist($conn_id, ".");
-$project_list = [];
+$project_list = new array();
 foreach ( $file_and_dir_list as $item ):
     if ( strpos($item, '.') === FALSE ):
         $item = '<li><a href="#" onClick="$(\'#project\').attr(\'value\', \'' . $item . '\');">' . $item . '</a></li>';

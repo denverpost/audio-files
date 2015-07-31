@@ -103,7 +103,7 @@ if(isset($_FILES["audio"])) {
         if ($_FILES["audio"]["type"]=="audio/mp3"):
             move_uploaded_file($_FILES["audio"]["tmp_name"], $_FILES["audio"]["name"]);
 
-            $path = $FTP_DIRECTORY.$location.$project.$_FILES["audio"]["name"];
+            $path = $FTP_DIRECTORY.$location.$project.'/'.$_FILES["audio"]["name"];
             if (ftp_put($conn_id, $path, $_FILES["audio"]["name"], FTP_BINARY)):
                 $filepath = "http://extras.denverpost.com/media/mp3/" . $year . $project . "/" . $_FILES["audio"]["name"];
                 echo "<div class='alerts' style='background-color:#a2ff96;'>File created and uploaded to: " . $filepath . "</div>";

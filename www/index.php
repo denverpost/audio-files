@@ -44,7 +44,6 @@ $conn_id = ftp_connect($FTP_SERVER) or die("Couldn't connect to $ftp_server");
 ftp_login($conn_id,$FTP_USER_NAME,$FTP_USER_PASS);
 ftp_pasv($conn_id, TRUE);
 $year = date("Y");
-$location = $year."/";
 if (!file_exists($FTP_DIRECTORY."/".$year)) { @ftp_mkdir($conn_id, $FTP_DIRECTORY."/".$year); }
 ftp_chdir($conn_id, $FTP_DIRECTORY."/".$year);
 
@@ -103,7 +102,7 @@ if(isset($_FILES["audio"])) {
         if ($_FILES["audio"]["type"]=="audio/mp3"):
             move_uploaded_file($_FILES["audio"]["tmp_name"], $_FILES["audio"]["name"]);
 
-            $path = $FTP_DIRECTORY.$location.$project.'/'.$_FILES["audio"]["name"];
+            $path = $FTP_DIRECTORY."/".$year.$project.'/'.$_FILES["audio"]["name"];
             if (ftp_put($conn_id, $path, $_FILES["audio"]["name"], FTP_BINARY)):
                 $filepath = "http://extras.denverpost.com/media/mp3/" . $year . $project . "/" . $_FILES["audio"]["name"];
                 echo "<div class='alerts' style='background-color:#a2ff96;'>File created and uploaded to: " . $filepath . "</div>";

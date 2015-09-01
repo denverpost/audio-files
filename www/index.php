@@ -111,6 +111,19 @@ if(isset($_FILES["audio"])) {
                 $markup = file_get_contents('audio.html');
                 $markup = str_replace('<', '&lt;', $markup);
                 $markup = str_replace('{{URL}}', $filepath, $markup);
+
+                if ( $_POST['title'] === '' ) $title = 'TITLE';
+                else $title = htmlspecialchars($_POST['title']);
+                $markup = str_replace('{{TITLE}}', $title, $markup);
+
+                if ( $_POST['description'] === '' ) $description = 'DESCRIPTION';
+                else $description = htmlspecialchars($_POST['description']);
+                $markup = str_replace('{{DESCRIPTION}}', $description, $markup);
+
+                if ( $_POST['thumbnail_url'] === '' ) $thumbnail_url = 'THUMBNAIL_URL';
+                else $thumbnail_url = htmlspecialchars($_POST['thumbnail_url']);
+                $markup = str_replace('{{THUMBNAIL_URL}}', $thumbnail_url, $markup);
+
                 $markup = '<pre>' . $markup . '</pre>';
             else:
                 echo "<div class='alerts' style='background-color:red'><span style='font-weight:bold'>ERROR</span> :: The file did not upload to " . $path . "!</div>";
@@ -161,6 +174,17 @@ ftp_close($conn_id);
     <hr noshade>
     <p id="audio_label">
         <label for="audio">Audio File:</label> <input name="audio" type="file" />
+    </p>
+    <hr noshade>
+    <p>These fields are optional:</p>
+    <p id="title_label">
+        <label for="title">Title:</label> <input name="title" id="title" type="text" maxlength="50" value="" />
+    </p>
+    <p id="thumbnail_url_label">
+        <label for="thumbnail_url">Thumbnail URL:</label> <input name="thumbnail_url" id="thumbnail_url" type="text" maxlength="100" value="" />
+    </p>
+    <p id="description_label">
+        <label for="description">Description:</label> <input name="description" id="description" type="text" maxlength="500" value="" />
     </p>
    <input type="submit" name="submit" value="Upload">
 </form>
